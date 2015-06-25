@@ -9,8 +9,8 @@ LINKER_OPT       = -L/usr/lib -lstdc++
 PREDEF		 	 = -D
 OUT_DIR          = ./bin/
 
-DEP = data.hh generator.hh canopy.hh config.h
-DC 	= data.cc generator.cc test.cc canopy.cc
+DEP = data.hh generator.hh canopy.hh config.h stat.hh
+DC 	= data.cc generator.cc test.cc canopy.cc stat.cc
 
 BUILD+=DATA_CANOPY
 

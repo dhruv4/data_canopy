@@ -1,3 +1,7 @@
+#ifndef DATA_HH
+#define DATA_HH
+
+
 #include <iostream>
 #include <cstdlib>
 
@@ -52,3 +56,4 @@ error_code chunkify(mdata** md, column* column_list, pos_int size, pos_int num_c
 error_code pretty_print_md(mdata* md);
 error_code pretty_print_cols(column* col, pos_int num_col);
 
+#endif

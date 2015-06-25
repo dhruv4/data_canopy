@@ -1,25 +1,18 @@
+#ifndef CANOPY_HH
+#define CANOPY_HH
+
+
 #include <math.h>
 #include <unordered_map>
 #include <assert.h>
 
-#ifndef DATA_HH
+#include "stat.hh"
 #include "data.hh"
-#define DATA_HH
-#endif
 #include "config.h"
-float calculateCorelation(column* x, column* y);
 
 
-/*
-* 	The struct that contains the stats
-*/
-struct stat{
 
-	pos_int num=0;
-	float mean=0.0;
-	float corelation=0.0;
 
-};
 
 /*
 *	Node of the data canopy
@@ -55,6 +48,4 @@ public:
 	pos_int getNodeValue(pos_int add);
 };
 
-
-
-
+#endif
