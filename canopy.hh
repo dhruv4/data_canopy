@@ -33,7 +33,13 @@ private:
 	unordered_map<pos_int,node*> nodes;	/*Store as a hash map*/
 	mdata* md;
 	pos_int log_num_chun;
+	
+	bool is_level_one_built;
+	bool is_level_two_built;
+	
 	pos_int GetAddress(pos_int node, pos_int chunk);
+	bool IsLevelOne(pos_int x);
+	bool IsLevelTwo(pos_int x);
 
 public:
 	
@@ -42,11 +48,12 @@ public:
 	error_code MakeCanopy();
 	error_code MakeCanopyCacheFriendly();
 	pos_int ProbeCanopy();
-	bool IsLevelOne(pos_int x);
+	
 	
 	error_code BuildLevelOne();
 	error_code BuildLevelTwo();
 	error_code BuildLevelOneTwo();
+	error_code BuildAll();
 
 	pos_int GetCanopySize();
 

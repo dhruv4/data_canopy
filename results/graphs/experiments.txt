@@ -1,0 +1,15 @@
+1. vary chunk size:
+
+Number of Columns = 15
+Size of Columns = 10^7
+
+2. vary column number:
+
+size of chunk = 10^4
+Size of Columns = 10^7
+
+3. vary column size:
+
+size of Chunk: 10^3
+number of columns: 15
+

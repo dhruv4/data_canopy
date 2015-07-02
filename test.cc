@@ -15,6 +15,7 @@ int main(int argc,  char** argv){
 
 	perfProfiler* p = new perfProfiler("cycles,cache-misses",false);
 	timer* t = new timer();
+	timer* total_t = new timer();
 
 	pos_int num_col = atoi(argv[1]); 
 	pos_int size_col = atoi(argv[2]);
@@ -37,27 +38,34 @@ int main(int argc,  char** argv){
 	chunkify(&md, columns, size_chunk, num_col);
 
 	p->startPerf();
-	sleep(1);
-	t->start();	
 	
-	DataCanopy* dc = new DataCanopy(md);
-	dc->BuildLevelOne();
-	
-	//dc->BuildLevelTwo();
-	
-	//dc->BuildLevelOneTwo();
+		sleep(1);
+		total_t->start();
+			
+			t->start();
+				
+				DataCanopy* dc = new DataCanopy(md);
+				dc->BuildLevelOne();
+			t->end();
+			
+			cout<<t->getDiff()<<",,level_one_time"<<endl;
+			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
+			
+			t->start();
+				dc->BuildLevelTwo();
+			t->end();
+			cout<<t->getDiff()<<",,level_two_time"<<endl;
 
-	cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
+			t->start();
+				dc->BuildAll();
+			t->end();
+			cout<<t->getDiff()<<",,rest_of_levels_time"<<endl;
+		
+		total_t->end();
+		
+		
+		cout<<total_t->getDiff()<<",,total_time"<<endl;
 	
-	t->end();
-	cout<<t->getDiff()<<",,level_one_time"<<endl;
-
-
-	
-	t->start();
-	dc->BuildLevelTwo();
-	t->end();
-	cout<<t->getDiff()<<",,level_two_time"<<endl;
 	p->endPerf();
 	//pretty_print_md(md);
 

@@ -37,7 +37,7 @@ def parseFile(filename):
 parseFile('out')
 
 
-def Plot(filename,x_value,y_values,outfile):
+def Plot(filename,x_value,y_values,outfile,log):
 
 	open_file = pd.read_csv(filename)
 	x = np.array(open_file[x_value])
@@ -48,7 +48,7 @@ def Plot(filename,x_value,y_values,outfile):
 	# initialize an array for plot data
 	plot_data = []
 
-	# create the gnuplot data
+	# create gnuplot data
 	for y_value in y_values:
 		y = np.array(open_file[y_value])
 		y_label = y_value.replace("_"," ")
@@ -59,18 +59,26 @@ def Plot(filename,x_value,y_values,outfile):
 	x_label = x_value.replace("_"," ")
 
 	#formatting options
-	g("set grid")
+	#g("set grid")
+	#g("set style pt 4")
 	g("set key left")
 	g("set terminal pdf enhanced font 'times,12'")
-	g("set output '"+outfile+"'")
+	g("set output '"+outfile+".pdf'")
 	#g("set format y '%sx10^{%S}'")
 	g("set xlabel '"+x_label+"'")
 	g("set format y '%1.2e'")
+	if log:
+		g("set logscale x")
+
 
 
 
 	#plot
-	g.plot(plot_data[0],plot_data[1])
+	g.plot(plot_data[0],plot_data[1],plot_data[2],plot_data[3])
+	g("set logscale y 2")
+	g("set output '"+outfile+"_log.pdf'")
+	g.plot(plot_data[0],plot_data[1],plot_data[2],plot_data[3])
+	#g.plot(plot_data[0])
 
 
 
