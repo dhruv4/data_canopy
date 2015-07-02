@@ -41,11 +41,24 @@ int main(int argc,  char** argv){
 	t->start();	
 	
 	DataCanopy* dc = new DataCanopy(md);
-	dc->initialize();
+	dc->BuildLevelOne();
+	
+	//dc->BuildLevelTwo();
+	
+	//dc->BuildLevelOneTwo();
+
+	cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 	
 	t->end();
-	p->endPerf();
+	cout<<t->getDiff()<<",,level_one_time"<<endl;
 
+
+	
+	t->start();
+	dc->BuildLevelTwo();
+	t->end();
+	cout<<t->getDiff()<<",,level_two_time"<<endl;
+	p->endPerf();
 	//pretty_print_md(md);
 
 /*#ifdef PROBE
@@ -67,6 +80,8 @@ int main(int argc,  char** argv){
 	
 	t->end();
 	p->endPerf();*/
+
+
 	
 	cout<<t->getDiff()<<",,time"<<endl;
 	cout<<"***"<<endl;

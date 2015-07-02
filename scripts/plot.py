@@ -1,5 +1,8 @@
 
 import csv
+import pandas as pd
+import numpy as np
+import Gnuplot as gp
 
 
 def parseFile(filename):
@@ -32,6 +35,45 @@ def parseFile(filename):
 	b.close()
 
 parseFile('out')
+
+
+def Plot(filename,x_value,y_values,outfile):
+
+	open_file = pd.read_csv(filename)
+	x = np.array(open_file[x_value])
+
+	# instantiate gnuplot
+	g = gp.Gnuplot()
+
+	# initialize an array for plot data
+	plot_data = []
+
+	# create the gnuplot data
+	for y_value in y_values:
+		y = np.array(open_file[y_value])
+		y_label = y_value.replace("_"," ")
+		plot_data.append(gp.Data(x,y,with_="lp",title=y_label))
+
+
+	# set the labels
+	x_label = x_value.replace("_"," ")
+
+	#formatting options
+	g("set grid")
+	g("set key left")
+	g("set terminal pdf enhanced font 'times,12'")
+	g("set output '"+outfile+"'")
+	#g("set format y '%sx10^{%S}'")
+	g("set xlabel '"+x_label+"'")
+	g("set format y '%1.2e'")
+
+
+
+	#plot
+	g.plot(plot_data[0],plot_data[1])
+
+
+
 
 
 

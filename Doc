@@ -5,3 +5,6 @@
 -- Make the sizes of things unsigned long
 
 -- Confirm that the addition of values is being reflected.
+
+-- Define a function that allows to construct the data canopy up to an arbitrary level at an arbitrary 
+data region. 

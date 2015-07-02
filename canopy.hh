@@ -33,19 +33,26 @@ private:
 	unordered_map<pos_int,node*> nodes;	/*Store as a hash map*/
 	mdata* md;
 	pos_int log_num_chun;
-	pos_int getAddress(pos_int node, pos_int chunk);
+	pos_int GetAddress(pos_int node, pos_int chunk);
 
 public:
 	
 	DataCanopy(mdata* md);
-	error_code initialize();
-	error_code makeCanopy();
-	error_code makeCanopyCacheFriendly();
-	pos_int probeCanopy();
-	bool isLevelOne(pos_int x);
+	error_code Initialize();
+	error_code MakeCanopy();
+	error_code MakeCanopyCacheFriendly();
+	pos_int ProbeCanopy();
+	bool IsLevelOne(pos_int x);
+	
+	error_code BuildLevelOne();
+	error_code BuildLevelTwo();
+	error_code BuildLevelOneTwo();
+
+	pos_int GetCanopySize();
 
 	//temp functions
-	pos_int getNodeValue(pos_int add);
+	pos_int GetNodeValue(pos_int add);
+
 };
 
 #endif

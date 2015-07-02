@@ -1,40 +1,32 @@
 
 import os
 
+#num_col, size_col, size_chunk
 
-
-def run_1(filename,outfile,numactl):
+def run_vary_column_size(filename,outfile,start,end,num_col,size_chunk):
 	os.system("rm "+outfile)
-	for i in range(2,20):
-		#size = pow(2,i)
-		size=i
-		print size
-		f = os.system(numactl + " ../bin/"+filename+" "+str(size) +" 1000 "+" 100>>"+outfile+" 2>&1")
+	for i in range(start,end):
+		size_col = pow(10,i)
+		print " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1"
+		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1")
 
-def run_cache(filename,outfile,numactl):
+
+
+def run_vary_chunk_size(filename,outfile,start,end,num_col,size_col):
 	os.system("rm "+outfile)
-	for i in range(19,30):
-		size = pow(2,i)
-		print size / 1024
-		times = 10000000
-		f = os.system(numactl + " ../bin/"+filename+" "+str(size)+" "+str(times) +">>"+outfile+" 2>&1")
+	for i in range(start,end):
+		size_chunk = pow(10,i)
+		print " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1"
+		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1")
 
-def run_cache_vary_times(filename,outfile,numactl):
+
+def run_vary_column_number(filename,outfile,start,end,size_col,size_chunk):
 	os.system("rm "+outfile)
-	for i in range(6,10):
-		size = 60000
-		print size / 1024
-		times = pow(10,i)
-		f = os.system(numactl + " ../bin/"+filename+" "+str(size)+" "+str(times) +">>"+outfile+" 2>&1")
+	for i in range(start,end):
+		num_col = i
+		print " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1"
+		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ ">>" + outfile + " 2>&1")
 
-
-def run_n(filename,outfile,numactl):
-	os.system("rm "+outfile)
-	for i in range(24,34):
-		size = pow(2,i)
-		print size
-		print numactl + " ../bin/"+filename+" "+str(size)+" 16 "+">>"+outfile+" 2>&1"
-		f = os.system(numactl + " ../bin/"+filename+" "+str(size)+" 8 "+">>"+outfile+" 2>&1")
 
 
 
@@ -73,29 +65,11 @@ def parseFile(filename):
 
 
 
+#run_vary_column_number("test","../results/raw/varyColumn.raw",2,20,1000000,1000)
+#parseFile("../results/raw/varyColumn.raw")
+
+import plot as p
 
 
-run_1("test","../results/raw/run_c_probe","numactl -N 1 -m 1")
-#run_1("run_1","../results/raw/run_1_rand_remote","numactl -N 1 -m 2")
+p.Plot("../results/raw/varyColumn.raw.csv",'num_col',['level_one_time','level_two_time'],"../results/graphs/varyColumn.pdf")
 
-#parseFile("../results/raw/run_1_rand_local")
-#parseFile("../results/raw/run_1_rand_remote")
-
-#run_1("run_1","../results/raw/run_1_local","numactl -N 1 -m 1")
-#run_1("run_1","../results/raw/run_1_remote","numactl -N 1 -m 2")
-
-#parseFile("../results/raw/run_1_local")
-#parseFile("../results/raw/run_1_remote")
-
-#run_n("run_n","../results/raw/run_n_rand_local","numactl -N 3 -m 3")
-#run_n("run_n","../results/raw/run_n_rand_remote","numactl -N 3 -m 2")
-
-parseFile("../results/raw/run_c_probe")
-#parseFile("../results/raw/run_n_rand_remote")
-
-
-#run_cache_vary_times("run_cache","../results/raw/run_cache_local_l2","numactl -N 3 -m 3")
-#run_cache_vary_times("run_cache","../results/raw/run_cache_remote_l3","numactl -N 3 -m 2")
-
-#parseFile("../results/raw/run_cache_local")
-#parseFile("../results/raw/run_cache_remote_l3")
