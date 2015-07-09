@@ -153,13 +153,13 @@ error_code DataCanopy::Initialize(){
 	return 1;
 }
 
-error_code DataCanopy::BuildLevelOne(){
+error_code DataCanopy::BuildLevelOne(int start_chunk, int end_chunk){
 
 	int num = 0; 
 
 	for (pos_int i = 0; i<md->num_col; ++i){
 
-		for (pos_int k = 0; k < md->num_chun; ++k){
+		for (pos_int k = start_chunk; k < end_chunk; ++k){
 		
 			num++;
 
@@ -197,7 +197,7 @@ error_code DataCanopy::BuildLevelOne(){
 
 }
 
-error_code DataCanopy::BuildLevelTwo(){
+error_code DataCanopy::BuildLevelTwo(int start_chunk, int end_chunk){
 
 	
 	int num = 0; 
@@ -205,7 +205,7 @@ error_code DataCanopy::BuildLevelTwo(){
 	for (pos_int i = 0; i<md->num_col; ++i){
 		for (pos_int j = i+1; j<md->num_col; ++j){
 
-			for (pos_int k = 0; k < md->num_chun; ++k){
+			for (pos_int k = start_chunk; k < end_chunks; ++k){
 				
 				/*Create a new node. For level two the identifier is 2^i + 2^j, k*/
 
@@ -230,13 +230,13 @@ error_code DataCanopy::BuildLevelTwo(){
 			}
 		}
 	}
-	is_level_one_built=true;
+	is_level_two_built=true;
 	return 1;
 
 
 }
 
-error_code DataCanopy::BuildLevelOneTwo(){
+error_code DataCanopy::BuildLevelOneTwo(int start_chunk, int end_chunk){
 
 	int num = 0; 
 	bool is_level_one_calculated;
@@ -245,7 +245,7 @@ error_code DataCanopy::BuildLevelOneTwo(){
 		is_level_one_calculated = false;
 
 		for (pos_int j = i+1; j<md->num_col+1; ++j){
-			for (pos_int k = 0; k < md->num_chun; ++k){
+			for (pos_int k = start_chunk; k < end_chunk; ++k){
 			
 			
 				if (is_level_one_calculated == false){
@@ -308,7 +308,7 @@ error_code DataCanopy::BuildLevelOneTwo(){
 }
 
 
-error_code DataCanopy::BuildAll(){
+error_code DataCanopy::BuildAll(int start_chunk, int end_chunk){
 
 	int num = 0;
 	pos_int canopy_size = pow(2,(md->num_col));
@@ -348,7 +348,7 @@ error_code DataCanopy::BuildAll(){
 
 			if(( (i>>j) &1) == 1){
 				int temp =(1<<j);
-				for (pos_int k = 0; k < md->num_chun; ++k){
+				for (pos_int k = start_chunk; k < end_chunk; ++k){
 					num++;
 					nd->statistic->num+=GetNodeValue(GetAddress(temp,k));
 #ifdef INSERT			

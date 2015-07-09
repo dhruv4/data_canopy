@@ -50,10 +50,10 @@ public:
 	pos_int ProbeCanopy();
 	
 	
-	error_code BuildLevelOne();
-	error_code BuildLevelTwo();
-	error_code BuildLevelOneTwo();
-	error_code BuildAll();
+	error_code BuildLevelOne(int start_chunk, int end_chunk);
+	error_code BuildLevelTwo(int start_chunk, int end_chunk);
+	error_code BuildLevelOneTwo(int start_chunk, int end_chunk);
+	error_code BuildAll(int start_chunk, int end_chunk);
 
 	pos_int GetCanopySize();
 

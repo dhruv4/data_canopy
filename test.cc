@@ -45,19 +45,19 @@ int main(int argc,  char** argv){
 			t->start();
 				
 				DataCanopy* dc = new DataCanopy(md);
-				dc->BuildLevelOne();
+				dc->BuildLevelOne(0,size_col/size_chunk);
 			t->end();
 			
 			cout<<t->getDiff()<<",,level_one_time"<<endl;
 			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 			
 			t->start();
-				dc->BuildLevelTwo();
+				dc->BuildLevelTwo(0,size_col/size_chunk);
 			t->end();
 			cout<<t->getDiff()<<",,level_two_time"<<endl;
 
 			t->start();
-				dc->BuildAll();
+				dc->BuildAll(0,size_col/size_chunk);
 			t->end();
 			cout<<t->getDiff()<<",,rest_of_levels_time"<<endl;
 		
