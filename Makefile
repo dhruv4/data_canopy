@@ -1,5 +1,5 @@
 
-COMPILER         = -c++
+COMPILER         = g++
 OPTIMIZATION_OPT = -O3
 OPTIONS          = -g -ggdb -pthread -std=c++11 -W -Wall -lnuma -lrt -W -Wno-long-long $(OPTIMIZATION_OPT)
 LINKER_OPT       = -L/usr/lib -lstdc++
