@@ -1,7 +1,7 @@
 
 COMPILER         = g++
 OPTIMIZATION_OPT = -O3
-OPTIONS          = -g -ggdb -pthread -W -Wall -lnuma -lrt -W -Wno-long-long $(OPTIMIZATION_OPT)
+OPTIONS          = -g -ggdb -pthread -W -Wall -lnuma -lrt -W -Wno-long-long -std=gnu++11 $(OPTIMIZATION_OPT)
 LINKER_OPT       = -L/usr/lib -lstdc++
 #VEC_FLAGS		 = -msse2 -msse4.1 -mpclmul
 #PROBE_T			 = 256
