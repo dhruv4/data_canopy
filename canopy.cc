@@ -48,8 +48,6 @@ bool DataCanopy::IsLevelTwo(pos_int x){
  	return (x == 2);
 }
 
-
-
 pos_int DataCanopy::ProbeCanopy(){
 	
 	pos_int n=0;
@@ -117,11 +115,6 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 
 }
 
-error_code DataCanopy::BuildLevelOne(){
-	BuildLevelOne(0,md->num_chun);
-	return 1;
-}
-
 error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 
 	
@@ -161,10 +154,6 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 
 }
 
-error_code DataCanopy::BuildLevelTwo(){
-	BuildLevelTwo(0,md->num_chun);
-	return 1;
-}
 
 error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 
@@ -237,12 +226,6 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 	return 1;
 }
 
-error_code DataCanopy::BuildLevelOneTwo(){
-	BuildLevelOneTwo(0,md->num_chun);
-	return 1;
-}
-
-
 error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 
 	int num = 0;
@@ -251,10 +234,10 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 	/*Build the first two-levels as they are required*/
 	
 	if(!is_level_one_built)
-		BuildLevelOne();
+		BuildLevelOne(start_chunk,end_chunk);
 	
 	if(!is_level_two_built)
-		BuildLevelTwo();
+		BuildLevelTwo(start_chunk,end_chunk);
 
 	
 	/***/
@@ -299,13 +282,11 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 	return 1;
 }
 
-error_code DataCanopy::BuildAll(){
-	BuildAll(0,md->num_chun);
-	return 1;
-}
-
 
 pos_int DataCanopy::GetCanopySize(){
 	return nodes.size();
 }
 
+pos_int DataCanopy::GetNumChunk(){
+	return md->num_chun;
+}

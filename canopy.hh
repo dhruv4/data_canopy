@@ -5,6 +5,7 @@
 #include <math.h>
 #include <unordered_map>
 #include <assert.h>
+#include <pthread.h>
 
 #include "stat.hh"
 #include "data.hh"
@@ -41,6 +42,9 @@ private:
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);
 
+	void BuildLevelOne(void* thread_input);
+
+	
 public:
 	
 	DataCanopy(mdata* md);
@@ -52,12 +56,8 @@ public:
 	error_code BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk);
 	error_code BuildAll(pos_int start_chunk, pos_int end_chunk);
 	
-	error_code BuildLevelOne();
-	error_code BuildLevelTwo();
-	error_code BuildLevelOneTwo();
-	error_code BuildAll();
-
 	pos_int GetCanopySize();
+	pos_int GetNumChunk();
 
 	//temp functions
 	pos_int GetNodeValue(pos_int add);

@@ -1,6 +1,6 @@
+
 #ifndef DATA_HH
 #define DATA_HH
-
 
 #include <iostream>
 #include <cstdlib>

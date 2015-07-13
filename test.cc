@@ -20,10 +20,12 @@ int main(int argc,  char** argv){
 	pos_int num_col = atoi(argv[1]); 
 	pos_int size_col = atoi(argv[2]);
 	pos_int size_chunk = atoi(argv[3]);
+	int num_threads = atoi(argv[4]);
 
 	cout<<num_col<<",,num_col"<<endl;
 	cout<<size_col<<",,size_col"<<endl;
 	cout<<size_chunk<<",,size_chunk"<<endl;
+	cout<<size_chunk<<",,num_threads"<<endl;
 
 	column* columns = (column*)malloc(num_col*sizeof(column));
 	
