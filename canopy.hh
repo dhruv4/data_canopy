@@ -44,16 +44,18 @@ private:
 public:
 	
 	DataCanopy(mdata* md);
-	error_code Initialize();
-	error_code MakeCanopy();
-	error_code MakeCanopyCacheFriendly();
 	pos_int ProbeCanopy();
 	
 	
-	error_code BuildLevelOne(int start_chunk, int end_chunk);
-	error_code BuildLevelTwo(int start_chunk, int end_chunk);
-	error_code BuildLevelOneTwo(int start_chunk, int end_chunk);
-	error_code BuildAll(int start_chunk, int end_chunk);
+	error_code BuildLevelOne(pos_int start_chunk, pos_int end_chunk);
+	error_code BuildLevelTwo(pos_int start_chunk, pos_int end_chunk);
+	error_code BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk);
+	error_code BuildAll(pos_int start_chunk, pos_int end_chunk);
+	
+	error_code BuildLevelOne();
+	error_code BuildLevelTwo();
+	error_code BuildLevelOneTwo();
+	error_code BuildAll();
 
 	pos_int GetCanopySize();
 

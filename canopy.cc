@@ -13,10 +13,6 @@ pos_int DataCanopy::GetNodeValue(pos_int add){
 */
 
 
-
-
-
-
 ///////////////////////////////
 
 pos_int scan(data* d, pos_int s){
@@ -53,32 +49,6 @@ bool DataCanopy::IsLevelTwo(pos_int x){
 }
 
 
-error_code DataCanopy::MakeCanopy(){
-
-	pos_int canopy_size = pow(2,(md->num_col));
-	
-	int num = 0;
-
-	//cout<<canopy_size<<endl;
-	for (pos_int k = 0; k < md->num_chun; ++k){
-		for (pos_int i = 1; i < canopy_size ; ++i){
-			
-			node* nd = new node();
-			nd->identifier = i;
-			std::pair<pos_int,node*> to_insert(i,nd);
-			nodes.insert(to_insert);
-			for(int j = 0 ;j < 32; ++j){
-
-				if(( (i>>j) &1) == 1){
-					num++;
-					nd->statistic->num=scan(md->chunk_list[0].vectors[j],md->chunk_list[k].size);
-				}
-			}
-		}
-	}
-	return 1;
-
-}
 
 pos_int DataCanopy::ProbeCanopy(){
 	
@@ -102,58 +72,8 @@ pos_int DataCanopy::ProbeCanopy(){
 }
 
 
-pos_int DataCanopy::GetCanopySize(){
-	return nodes.size();
-}
 
-error_code DataCanopy::Initialize(){
-	int n = 0;
-	int m = 0;
-	for (pos_int i = 0; i < md->num_col; ++i){
-		for (pos_int j = i; j < md->num_col; ++j){
-			for (pos_int k = 0; k < md->num_chun; ++k){
-				if(i==j){
-					
-				/*****/	
-
-					node* nd = new node();
-					nd->statistic = new stat();
-					nd->identifier = i;
-
-				/*****/
-
-					nd->statistic->num+=scan(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
-					std::pair<pos_int,node*> to_insert(GetAddress(1<<i,k),nd);
-					nodes.insert(to_insert);
-					n++;
-					continue;
-				}
-				
-				/*****/
-				
-				pos_int posn_1 = 1<<i;
-				pos_int posn_2 = 1<<j;
-				pos_int posn = posn_1|posn_2;
-				
-				node* nd = new node();
-				nd->statistic = new stat();
-				nd->identifier = posn;
-				
-				/*****/
-				
-				nd->statistic->corelation=calculateCorelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
-				std::pair<pos_int,node*> to_insert(GetAddress(posn,k),nd);
-				nodes.insert(to_insert);
-				m++;
-			}
-		}		
-	}
-	
-	cout<<nodes.size()<<",,canopy_size"<<endl;
-	return 1;
-}
-
-error_code DataCanopy::BuildLevelOne(int start_chunk, int end_chunk){
+error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 
 	int num = 0; 
 
@@ -197,7 +117,12 @@ error_code DataCanopy::BuildLevelOne(int start_chunk, int end_chunk){
 
 }
 
-error_code DataCanopy::BuildLevelTwo(int start_chunk, int end_chunk){
+error_code DataCanopy::BuildLevelOne(){
+	BuildLevelOne(0,md->num_chun);
+	return 1;
+}
+
+error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 
 	
 	int num = 0; 
@@ -205,7 +130,7 @@ error_code DataCanopy::BuildLevelTwo(int start_chunk, int end_chunk){
 	for (pos_int i = 0; i<md->num_col; ++i){
 		for (pos_int j = i+1; j<md->num_col; ++j){
 
-			for (pos_int k = start_chunk; k < end_chunks; ++k){
+			for (pos_int k = start_chunk; k < end_chunk; ++k){
 				
 				/*Create a new node. For level two the identifier is 2^i + 2^j, k*/
 
@@ -236,7 +161,12 @@ error_code DataCanopy::BuildLevelTwo(int start_chunk, int end_chunk){
 
 }
 
-error_code DataCanopy::BuildLevelOneTwo(int start_chunk, int end_chunk){
+error_code DataCanopy::BuildLevelTwo(){
+	BuildLevelTwo(0,md->num_chun);
+	return 1;
+}
+
+error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 
 	int num = 0; 
 	bool is_level_one_calculated;
@@ -307,8 +237,13 @@ error_code DataCanopy::BuildLevelOneTwo(int start_chunk, int end_chunk){
 	return 1;
 }
 
+error_code DataCanopy::BuildLevelOneTwo(){
+	BuildLevelOneTwo(0,md->num_chun);
+	return 1;
+}
 
-error_code DataCanopy::BuildAll(int start_chunk, int end_chunk){
+
+error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 
 	int num = 0;
 	pos_int canopy_size = pow(2,(md->num_col));
@@ -363,75 +298,14 @@ error_code DataCanopy::BuildAll(int start_chunk, int end_chunk){
 	}
 	return 1;
 }
-error_code DataCanopy::MakeCanopyCacheFriendly(){
 
-	pos_int canopy_size = pow(2,(md->num_col));
-	
-	int num = 0;
-	
-	for (pos_int i = 1; i < canopy_size ; ++i){
-		
-		/*Create a new node*/
-		node* nd = new node();
-		nd->statistic = new stat();
-		nd->identifier = i;
-
-#ifndef COMPOSABLE
-		for(pos_int j = 0 ;j < md->num_col; ++j){
-
-			if(( (i>>j) &1) == 1){
-				for (pos_int k = 0; k < md->num_chun; ++k){
-					num++;
-					nd->statistic->num+=scan(md->chunk_list[k].vectors[j],md->chunk_list[k].size);
-#ifdef INSERT			
-					std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
-					nodes.insert(to_insert);
-#endif
-				}
-			}
-		}
-		
-#else
-		if(isLevelOne(i)){
-
-			for(pos_int j = 0 ;j < md->num_col; ++j){
-
-				if(( (i>>j) &1) == 1){
-					for (pos_int k = 0; k < md->num_chun; ++k){
-						num++;
-						/***/
-
-						nd->statistic->mean=calculateMean(md->chunk_list[k].vectors[j],md->chunk_list[k].size);
-						nd->statistic->variance=calculateVariance(md->chunk_list[k].vectors[j],md->chunk_list[k].size);
-						nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
-
-						/***/
-#ifdef INSERT			
-						std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
-						nodes.insert(to_insert);
-#endif
-					}
-				}
-			}
-		}else{
-			for(pos_int j = 0 ;j < md->num_col; ++j){
-
-				if(( (i>>j) &1) == 1){
-					int temp =(1<<j);
-					for (pos_int k = 0; k < md->num_chun; ++k){
-						num++;
-						nd->statistic->num+=GetNodeValue(GetAddress(temp,k));
-	#ifdef INSERT			
-						std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
-						nodes.insert(to_insert);
-	#endif
-					}
-				}
-			}
-		}
-#endif
-	}
-	cout<<nodes.size()<<",,canopy_size"<<endl;
+error_code DataCanopy::BuildAll(){
+	BuildAll(0,md->num_chun);
 	return 1;
-	
 }
+
+
+pos_int DataCanopy::GetCanopySize(){
+	return nodes.size();
+}
+
