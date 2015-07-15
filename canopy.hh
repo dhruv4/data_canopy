@@ -6,14 +6,24 @@
 #include <unordered_map>
 #include <assert.h>
 #include <pthread.h>
+#include <assert.h>
 
-#include "stat.hh"
 #include "data.hh"
 #include "config.h"
 
+/*
+* 	The struct that contains the stats
+*/
 
+struct stat{
 
+	pos_int num=0;
+	float mean=0.0;
+	float variance=0.0;
+	float standard_deviation=0.0;
+	float correlation=0.0;
 
+};
 
 /*
 *	Node of the data canopy
@@ -25,6 +35,7 @@ struct node{
 	stat* statistic;
 
 };
+
 
 class DataCanopy{
 
@@ -38,11 +49,19 @@ private:
 	bool is_level_one_built;
 	bool is_level_two_built;
 	
-	pos_int GetAddress(pos_int node, pos_int chunk);
+	
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);
 
 	void BuildLevelOne(void* thread_input);
+	
+	float CalculateCorrelation(column* x, column* y);
+	float CalculateCorrelation(data* x, pos_int size_x, data* y, pos_int size_y);
+	float CalculateMean(data* x, pos_int size_x);
+	float CalculateVariance(data* x, pos_int size_x,float mean);
+	float CalculateMultiCorrelation(pos_int node_id, int chunk_number);
+
+	pos_int GetNodeValue(pos_int add);
 
 	
 public:
@@ -58,9 +77,9 @@ public:
 	
 	pos_int GetCanopySize();
 	pos_int GetNumChunk();
+	pos_int GetAddress(pos_int node, pos_int chunk);
 
 	//temp functions
-	pos_int GetNodeValue(pos_int add);
 
 };
 

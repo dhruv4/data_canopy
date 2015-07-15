@@ -8,6 +8,8 @@
 #include "data.hh"
 #include "config.h"
 
+
+
 /*
 * 	The struct that contains the stats
 */
@@ -26,6 +28,7 @@ float calculateCorelation(column* x, column* y);
 float calculateCorelation(data* x, pos_int size_x, data* y, pos_int size_y);
 float calculateMean(data* x, pos_int size_x);
 float calculateVariance(data* x, pos_int size_x,float mean);
+float calculateMultiCorrelation(pos_int node_id, int chunk_number, DataCanopy* dc);
 
 
 

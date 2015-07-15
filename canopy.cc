@@ -92,8 +92,8 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			/*Calculate and store statistics for each of the nodes based on the 
 			data it accesses.*/
 
-			nd->statistic->mean=calculateMean(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
-			nd->statistic->variance=calculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
+			nd->statistic->mean=CalculateMean(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
+			nd->statistic->variance=CalculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
 			nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
 
 			/***/
@@ -138,7 +138,7 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 			
 				/*Calculate the correlation and store the value*/
 
-				nd->statistic->corelation=calculateCorelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
+				nd->statistic->correlation=CalculateCorrelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
 				
 				/***/
 #ifdef INSERT			
@@ -158,16 +158,16 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 
 	int num = 0; 
-	bool is_level_one_calculated;
+	bool is_level_one_Calculated;
 	
 	for (pos_int i = 0; i<md->num_col; ++i){
-		is_level_one_calculated = false;
+		is_level_one_Calculated = false;
 
 		for (pos_int j = i+1; j<md->num_col+1; ++j){
 			for (pos_int k = start_chunk; k < end_chunk; ++k){
 			
 			
-				if (is_level_one_calculated == false){
+				if (is_level_one_Calculated == false){
 
 					/*Create a new node. For level one the identifier is 2^i*/
 					
@@ -179,8 +179,8 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 					//cout<<pow(2,i)<<endl;
 					/***/
 
-					nd->statistic->mean=calculateMean(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
-					nd->statistic->variance=calculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
+					nd->statistic->mean=CalculateMean(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
+					nd->statistic->variance=CalculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
 					nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
 
 					/***/
@@ -209,7 +209,7 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 			
 				/***/
 
-				nd->statistic->corelation=calculateCorelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
+				nd->statistic->correlation=CalculateCorrelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
 				
 				/***/
 #ifdef INSERT			
@@ -217,7 +217,7 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 				nodes.insert(to_insert);
 #endif
 			}
-			is_level_one_calculated=true;
+			is_level_one_Calculated=true;
 		}
 	}
 	is_level_one_built=true;
@@ -262,20 +262,16 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 		/*Access all the values that are required to to create a certain node. The assumption here is that 
 		you will need to access all nodes in the lowest level that correspond to the columns*/
 
-		for(pos_int j = 0 ;j < md->num_col; ++j){
-
-			if(( (i>>j) &1) == 1){
-				int temp =(1<<j);
-				for (pos_int k = start_chunk; k < end_chunk; ++k){
-					num++;
-					nd->statistic->num+=GetNodeValue(GetAddress(temp,k));
+		
+		for (pos_int k = start_chunk; k < end_chunk; ++k){
+			num++;
+			nd->statistic->num+=CalculateMultiCorrelation(i,k);
 #ifdef INSERT			
-					std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
-					nodes.insert(to_insert);
+			std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
+			nodes.insert(to_insert);
 #endif
-				}
-			}
 		}
+			
 
 		/***/
 	}
@@ -290,3 +286,122 @@ pos_int DataCanopy::GetCanopySize(){
 pos_int DataCanopy::GetNumChunk(){
 	return md->num_chun;
 }
+
+float DataCanopy::CalculateCorrelation(column* x, column* y){
+	assert(x->size == y->size);
+	pos_int sumx=0;
+	pos_int sumy=0;
+	pos_int sumx2=0;
+	pos_int sumy2=0;
+	pos_int sumxy=0;
+
+	for(pos_int i=0; i<x->size; ++i){
+		sumx+=x->vector[i];
+		sumy+=y->vector[i];
+		sumx2+=pow(x->vector[i],2);
+		sumy2+=pow(y->vector[i],2);
+		sumxy+=x->vector[i]*y->vector[i];
+	}
+
+	float num = (x->size*sumxy)-(sumx*sumy)*1.0;
+	float den_1 = sqrt((x->size*sumx2)-pow(sumx,2));
+	float den_2 = sqrt((x->size*sumy2)-pow(sumy,2));
+	
+	cout<<sumxy<<endl;
+	cout<<sumx<<endl;
+	cout<<sumy<<endl;
+
+	cout<<num<<endl;
+	cout<<den_1<<endl;
+	cout<<den_2<<endl;
+	
+	float cor = num/(den_2*den_1);
+	cout<<cor<<endl;
+	return cor;
+}
+
+
+float DataCanopy::CalculateCorrelation(data* x, pos_int size_x, data* y, pos_int size_y){
+	assert(size_x == size_y);
+	pos_int sumx=0;
+	pos_int sumy=0;
+	pos_int sumx2=0;
+	pos_int sumy2=0;
+	pos_int sumxy=0;
+
+	for(pos_int i=0; i<size_x; ++i){
+		sumx+=x[i];
+		sumy+=y[i];
+		sumx2+=pow(x[i],2);
+		sumy2+=pow(y[i],2);
+		sumxy+=x[i]*y[i];
+	}
+
+	float num = (size_x*sumxy)-(sumx*sumy)*1.0;
+	float den_1 = sqrt((size_x*sumx2)-pow(sumx,2));
+	float den_2 = sqrt((size_x*sumy2)-pow(sumy,2));	
+	float cor = num/(den_2*den_1);
+
+	return cor;
+}
+
+float DataCanopy::CalculateMean(data* x, pos_int size_x){
+
+	int sum = 0;
+	for(pos_int i=0; i<size_x; ++i){
+		sum+=x[i];
+	}
+	return sum*1.0/size_x*1.0;
+}
+
+float DataCanopy::CalculateVariance(data* x, pos_int size_x,float mean){
+
+	int sum = 0;
+	for(pos_int i=0; i<size_x; ++i){
+		sum+=pow(mean-(x[i]*1.0),2);
+	}
+	return sum*1.0/size_x*1.0;
+}
+
+float DataCanopy::CalculateMultiCorrelation(pos_int node_id, int chunk_number){
+
+	for(pos_int j = 0 ;j < md->num_col; ++j){
+		
+		/*Check if the particular column is of relevance to the ID*/
+		
+		if(( (node_id>>j) &1) == 1){
+			
+			/*Check what other columns are in the ID, which should be paired with this*/
+
+			for(pos_int i = j+1; i < md->num_col; ++i){
+
+				if(( (node_id>>i) &1) == 1){
+					GetNodeValue(GetAddress(pow(2,i)+pow(2,j),chunk_number));
+
+				}
+			}			
+		}
+	}
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

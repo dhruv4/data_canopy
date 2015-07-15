@@ -2,6 +2,7 @@
 
 #include "config.h"
 #include "canopy.hh"
+#include "canopyBuilder.hh"
 #include "generator.hh"
 #include "./tools/run_perf.hh"
 #include "./tools/timer.hh"
@@ -47,19 +48,20 @@ int main(int argc,  char** argv){
 			t->start();
 				
 				DataCanopy* dc = new DataCanopy(md);
-				dc->BuildLevelOne(0,size_col/size_chunk);
+				CanopyBuilder* cb = new CanopyBuilder(dc,num_threads);
+				cb->BuildLevelOne();
 			t->end();
 			
 			cout<<t->getDiff()<<",,level_one_time"<<endl;
 			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 			
 			t->start();
-				dc->BuildLevelTwo(0,size_col/size_chunk);
+				cb->BuildLevelTwo();
 			t->end();
 			cout<<t->getDiff()<<",,level_two_time"<<endl;
 
 			t->start();
-				dc->BuildAll(0,size_col/size_chunk);
+				cb->BuildAll();
 			t->end();
 			cout<<t->getDiff()<<",,rest_of_levels_time"<<endl;
 		

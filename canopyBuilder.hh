@@ -12,7 +12,7 @@ struct threadInput{
 	pos_int start_chunk;
 	pos_int end_chunk;
 	DataCanopy* dc;
-	int buildMode; // 1 -- LevelOne, 2 -- Level 2, 12 -- Level 1 and 2, 3 -- All levels
+	int buildMode; // 1 -- LevelOne; 2 -- Level 2; 12 -- Level 1 and 2; 3 -- All levels;
 };
 
 //void thread_BuildThreaded(void* input);

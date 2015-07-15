@@ -1,4 +1,4 @@
-#include "stat.hh"
+#include "canopy.hh"
 
 float calculateCorelation(column* x, column* y){
 	assert(x->size == y->size);
@@ -74,6 +74,32 @@ float calculateVariance(data* x, pos_int size_x,float mean){
 		sum+=pow(mean-(x[i]*1.0),2);
 	}
 	return sum*1.0/size_x*1.0;
+}
+
+float calculateMultiCorrelation(pos_int node_id, int chunk_number, DataCanopy* dc){
+
+	for(pos_int j = 0 ;j < dc->md->num_col; ++j){
+		
+		/*Check if the particular column is of relevance to the ID*/
+		
+		if(( (node_id>>j) &1) == 1){
+			
+			/*Check what other columns are in the ID, which should be paired with this*/
+
+			for(pos_int i = j+1; j < dc->md->num_col; ++j){
+
+				if(( (node_id>>i) &1) == 1){
+					dc->GetNodeValue(dc->GetAddress(pow(2,i)+pow(2,j),chunk_number));
+
+				}
+			}			
+		}
+	}
+	return 0;
+
+
+
+
 }
 
 

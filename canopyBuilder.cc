@@ -21,6 +21,11 @@ void* thread_BuildThreaded(void* input){
 	return 0;
 }
 
+CanopyBuilder::CanopyBuilder(DataCanopy* dc,int nt){
+	canopy=dc;
+	nthreads=nt;
+}
+
 int CanopyBuilder::BuildThreaded(int buildMode){
 	
 	pthread_t threads[nthreads];
