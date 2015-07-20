@@ -6,6 +6,8 @@ void* thread_BuildThreaded(void* input){
 
 	threadInput* in = (threadInput*) input;
 
+	//cout<<in->start_chunk<<"\t"<<in->end_chunk<<endl;
+
 	if(in->buildMode == 1)
 		in->dc->BuildLevelOne(in->start_chunk,in->end_chunk);
 
@@ -32,7 +34,6 @@ int CanopyBuilder::BuildThreaded(int buildMode){
 	threadInput inputs[nthreads];
 
 	int chunks_per_thread = canopy->GetNumChunk() / nthreads;
-
 	for (int i = 0; i < nthreads; ++i){
 		
 		inputs[i].dc = canopy;
@@ -41,8 +42,12 @@ int CanopyBuilder::BuildThreaded(int buildMode){
 		inputs[i].end_chunk=(i+1)*chunks_per_thread;
 		if(i==nthreads-1)
 			inputs[i].end_chunk=canopy->GetNumChunk();
-		cout<<inputs[i].start_chunk<<" "<<inputs[i].end_chunk<<endl;
 		pthread_create(&threads[i], NULL, *thread_BuildThreaded,(void*)&inputs[i]);
+		//cout<<inputs[i].start_chunk<<"\t"<<inputs[i].end_chunk<<endl;
+	}
+	void* status;
+	for(int i =0; i<nthreads; ++i){
+		pthread_join(threads[i],&status);
 	}
 	return 0;
 

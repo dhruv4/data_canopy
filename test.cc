@@ -9,9 +9,11 @@
 
 using namespace std;
 
+
 int main(int argc,  char** argv){
+
 	
-	if(argc !=4)
+	if(argc !=5)
 		return -1;
 
 	perfProfiler* p = new perfProfiler("cycles,cache-misses",false);
@@ -26,7 +28,7 @@ int main(int argc,  char** argv){
 	cout<<num_col<<",,num_col"<<endl;
 	cout<<size_col<<",,size_col"<<endl;
 	cout<<size_chunk<<",,size_chunk"<<endl;
-	cout<<size_chunk<<",,num_threads"<<endl;
+	cout<<num_threads<<",,num_threads"<<endl;
 
 	column* columns = (column*)malloc(num_col*sizeof(column));
 	
@@ -44,7 +46,7 @@ int main(int argc,  char** argv){
 	
 		sleep(1);
 		total_t->start();
-			
+	
 			t->start();
 				
 				DataCanopy* dc = new DataCanopy(md);
@@ -59,6 +61,7 @@ int main(int argc,  char** argv){
 				cb->BuildLevelTwo();
 			t->end();
 			cout<<t->getDiff()<<",,level_two_time"<<endl;
+			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 
 			t->start();
 				cb->BuildAll();
@@ -67,10 +70,17 @@ int main(int argc,  char** argv){
 		
 		total_t->end();
 		
-		
 		cout<<total_t->getDiff()<<",,total_time"<<endl;
+		
+		cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
+
+		
+#ifdef INSERT
+		assert(dc->GetCanopySize()==( (pow( 2,md->num_col) -1 ) * md->num_chun) );
+#endif
+
+	//p->endPerf();
 	
-	p->endPerf();
 	//pretty_print_md(md);
 
 /*#ifdef PROBE
@@ -95,7 +105,7 @@ int main(int argc,  char** argv){
 
 
 	
-	cout<<t->getDiff()<<",,time"<<endl;
+
 	cout<<"***"<<endl;
 
 

@@ -4,7 +4,10 @@
 
 -- Make the sizes of things unsigned long
 
--- Confirm that the addition of values is being reflected.
+-- Confirm that the addition of values is being reflected. <fixed>
 
 -- Define a function that allows to construct the data canopy up to an arbitrary level at an arbitrary 
 data region. 
+
+-- The major bottleneck is the insert function as I am using a lock for now. We need a non-locking version. The current implementation does 
+not scale well when we insert values. 

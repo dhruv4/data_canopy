@@ -30,10 +30,11 @@ DataCanopy::DataCanopy(mdata* m){
 	log_num_chun = ceil(log_nc);
 	is_level_one_built=false;
 	is_level_two_built=false;
+
 }
 
 pos_int DataCanopy::GetAddress(pos_int node, pos_int chunk){
-	return node<<log_num_chun|chunk;
+	return node<<(log_num_chun)|chunk;
 }
 
 bool DataCanopy::IsLevelOne(pos_int x){
@@ -73,12 +74,13 @@ pos_int DataCanopy::ProbeCanopy(){
 
 error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 
+
 	int num = 0; 
 
 	for (pos_int i = 0; i<md->num_col; ++i){
 
 		for (pos_int k = start_chunk; k < end_chunk; ++k){
-		
+			
 			num++;
 
 			/*Create a new node. For level one the identifier is 2^i*/
@@ -102,15 +104,26 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			
 			/*Insert the node in the data canopy*/
 
+			pthread_mutex_lock(&mutex);
+
 			std::pair<pos_int,node*> to_insert(GetAddress(pow(2,i),k),nd);
 			nodes.insert(to_insert);
 
+			pthread_mutex_unlock(&mutex);
 			/***/
 #endif
 
 		}
 	}
+
 	is_level_one_built=true;
+
+#ifdef INSERT
+	//cout<<GetCanopySize()<<" "<<md->num_col*md->num_chun<<endl;
+	//assert(GetCanopySize()==md->num_col*md->num_chun);
+
+#endif
+
 	return 1;
 
 }
@@ -141,14 +154,24 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 				nd->statistic->correlation=CalculateCorrelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
 				
 				/***/
-#ifdef INSERT			
+#ifdef INSERT	
+
+				pthread_mutex_lock(&mutex);
+
 				std::pair<pos_int,node*> to_insert(address,nd);
 				nodes.insert(to_insert);
+
+				pthread_mutex_unlock(&mutex);
 #endif
 			}
 		}
 	}
 	is_level_two_built=true;
+
+#ifdef INSERT
+	//assert(GetCanopySize()==(md->num_col + (md->num_col*(md->num_col-1)/2)) * md->num_chun);
+#endif
+
 	return 1;
 
 
@@ -185,9 +208,13 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 
 					/***/
 
-#ifdef INSERT			
+#ifdef INSERT		
+					pthread_mutex_lock(&mutex);
+
 					std::pair<pos_int,node*> to_insert(address,nd);
 					nodes.insert(to_insert);
+
+					pthread_mutex_unlock(&mutex);
 #endif				
 				}
 
@@ -212,9 +239,14 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 				nd->statistic->correlation=CalculateCorrelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
 				
 				/***/
-#ifdef INSERT			
+#ifdef INSERT	
+
+				pthread_mutex_lock(&mutex);
+
 				std::pair<pos_int,node*> to_insert(address,nd);
 				nodes.insert(to_insert);
+
+				pthread_mutex_unlock(&mutex);
 #endif
 			}
 			is_level_one_Calculated=true;
@@ -242,12 +274,15 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 	
 	/***/
 	
-	for (pos_int i = md->num_col+1; i < canopy_size ; ++i){
+	for (pos_int i = 1; i < canopy_size ; ++i){
 		
 		/*Skip level two, as we have already constructed it*/
-		
-		if(IsLevelTwo(i))
+		if(IsLevelOne(i)){
 			continue;
+		}
+		if(IsLevelTwo(i)){
+			continue;
+		}
 
 		/**/
 		
@@ -267,14 +302,23 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 			num++;
 			nd->statistic->num+=CalculateMultiCorrelation(i,k);
 #ifdef INSERT			
+
+			pthread_mutex_lock(&mutex);
+
 			std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
 			nodes.insert(to_insert);
+
+			pthread_mutex_unlock(&mutex);
 #endif
 		}
 			
 
 		/***/
 	}
+
+#ifdef INSERT
+	//assert(GetCanopySize()==(pow(md->num_col,2) * md->num_chun));
+#endif
 	return 1;
 }
 

@@ -11,6 +11,8 @@
 #include "data.hh"
 #include "config.h"
 
+
+
 /*
 * 	The struct that contains the stats
 */
@@ -48,12 +50,13 @@ private:
 	
 	bool is_level_one_built;
 	bool is_level_two_built;
+
+	pthread_mutex_t mutex;
 	
 	
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);
 
-	void BuildLevelOne(void* thread_input);
 	
 	float CalculateCorrelation(column* x, column* y);
 	float CalculateCorrelation(data* x, pos_int size_x, data* y, pos_int size_y);
