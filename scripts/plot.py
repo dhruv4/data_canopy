@@ -81,7 +81,39 @@ def Plot(filename,x_value,y_values,outfile,log):
 	#g.plot(plot_data[0])
 
 
+def Plot_scaling(filename,x_value,y_value,outfile,log):
 
+	open_file = pd.read_csv(filename)
+	
+	x = np.array(open_file[x_value])
+	x_label = x_value.replace("_"," ")
+	baseline=1.0/x
+	
+	# instantiate gnuplot
+	g = gp.Gnuplot()
+	
+	y = np.array(open_file[y_value])
+
+	y=y/y[0]
+
+
+	plot_data=[];
+	#print x
+	#print y
+	#print baseline
+
+	g("set key left")
+	g("set terminal pdf enhanced font 'times,12'")
+	g("set output '"+outfile+".pdf'")
+	#g("set format y '%sx10^{%S}'")
+	g("set xlabel '"+x_label+"'")
+	g("set format y '%1.2e'")
+	if log:
+		g("set logscale x")
+
+	plot_data.append(gp.Data(x,y,with_="lp",title="Observed scaling"))
+	plot_data.append(gp.Data(x,baseline,with_="lp", title="Perfect scaling"))
+	g.plot(plot_data[0],plot_data[1])
 
 
 
