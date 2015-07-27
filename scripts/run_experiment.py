@@ -40,9 +40,9 @@ if vary_chunk_size:
 
 if vary_thread_num:
 
-	exp.run_vary_thread_number("test","../results/raw/varyThreadNum_TBB.raw",0,8,15,1000000,1000)
-	exp.parseFile("../results/raw/varyThreadNum_TBB.raw")
-	#p.Plot("../results/raw/varyThreadNum_noInsert.raw.csv",'num_threads',['level_one_time','level_two_time','rest_of_levels_time','total_time'],"../results/graphs/varyThreadNum_noInsert",True)
-	p.Plot_scaling("../results/raw/varyThreadNum_TBB.raw.csv",'num_threads','total_time',"../results/graphs/varyThreadNum_TBB_scaling",True)
+	exp.run_vary_thread_number("test","../results/raw/varyThreadNum_no_locking.raw",0,8,15,1000000,1000)
+	exp.parseFile("../results/raw/varyThreadNum_no_locking.raw")
+	p.PlotSimple("../results/raw/varyThreadNum_no_locking.raw.csv",'num_threads',['total_time'],"../results/graphs/varyThreadNum_no_locking",True)
+	p.Plot_scaling("../results/raw/varyThreadNum_no_locking.raw.csv",'num_threads','total_time',"../results/graphs/varyThreadNum_no_locking_scaling",True)
 #	p.Plot("../results/raw/varyChunkSize.raw.csv",'size_chunk',['cache-misses'],"../results/graphs/varyChunkSize_cacheMisses.pdf",True)
 

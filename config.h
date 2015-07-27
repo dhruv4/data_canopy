@@ -1,6 +1,6 @@
 /*Define statements*/
 
-#define LOCKFRE
+#define LOCKFREE
 //#define PROBE
 #define INSERT
 #ifdef PROBE
