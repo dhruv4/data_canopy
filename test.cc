@@ -47,26 +47,44 @@ int main(int argc,  char** argv){
 		sleep(1);
 		total_t->start();
 	
+			DataCanopy* dc = new DataCanopy(md);
+			CanopyBuilder* cb = new CanopyBuilder(dc,num_threads);
+			
+			/***/
 			t->start();
-				
-				DataCanopy* dc = new DataCanopy(md);
-				CanopyBuilder* cb = new CanopyBuilder(dc,num_threads);
 				cb->BuildLevelOne();
 			t->end();
-			
+
 			cout<<t->getDiff()<<",,level_one_time"<<endl;
 			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
-			
+
+#ifdef INSERT
+			assert(dc->GetCanopySize()==( md->num_col * md->num_chun) );
+#endif
+			/***/
+
+			/***/
 			t->start();
 				cb->BuildLevelTwo();
 			t->end();
+
 			cout<<t->getDiff()<<",,level_two_time"<<endl;
 			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 
+#ifdef INSERT
+			assert(dc->GetCanopySize()==( (md->num_col + ((md->num_col)*(md->num_col-1)/2) ) * md->num_chun ) );
+#endif			
+			/***/
 			t->start();
 				cb->BuildAll();
 			t->end();
+			
 			cout<<t->getDiff()<<",,rest_of_levels_time"<<endl;
+			cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
+
+#ifdef INSERT
+		assert(dc->GetCanopySize()==( (pow( 2,md->num_col) -1 ) * md->num_chun) );
+#endif
 		
 		total_t->end();
 		
@@ -75,11 +93,9 @@ int main(int argc,  char** argv){
 		cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 
 		
-#ifdef INSERT
-		assert(dc->GetCanopySize()==( (pow( 2,md->num_col) -1 ) * md->num_chun) );
-#endif
 
-	//p->endPerf();
+
+	p->endPerf();
 	
 	//pretty_print_md(md);
 

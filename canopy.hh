@@ -8,8 +8,29 @@
 #include <pthread.h>
 #include <assert.h>
 
+
+
 #include "data.hh"
 #include "config.h"
+#include "tbb/concurrent_hash_map.h"
+using namespace tbb;
+
+/*
+*	Structure that defines hashing for the user's type
+*/
+
+struct MyHashCompare {
+    static size_t hash( const pos_int& x ) {
+        return x;
+    }
+
+    //! True if numbers are equal
+    
+    static bool equal( const pos_int& x, const pos_int& y ) {
+        return x==y;
+    }
+
+};
 
 
 
@@ -38,13 +59,21 @@ struct node{
 
 };
 
+typedef concurrent_hash_map<pos_int,node*,MyHashCompare> concurrent_map;
 
 class DataCanopy{
 
 private:
 	
 	node** canopies;					/*Store as an array indexed by the node identifier*/
+	
+#ifndef LOCKFREE
 	unordered_map<pos_int,node*> nodes;	/*Store as a hash map*/
+#else	
+	concurrent_map nodes;
+#endif
+
+
 	mdata* md;
 	pos_int log_num_chun;
 	
@@ -53,6 +82,9 @@ private:
 
 	pthread_mutex_t mutex;
 	
+	error_code InsertNode(pos_int address, node* node);
+	node* GetNode(pos_int address);
+
 	
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);

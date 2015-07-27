@@ -5,7 +5,15 @@
 */
 
 pos_int DataCanopy::GetNodeValue(pos_int add){
+	
+#ifndef LOCKFREE
 	return nodes.find(add)->second->statistic->num;
+#else
+	concurrent_map::accessor result;
+	nodes.find(result,add);
+	return result->second->statistic->num;
+#endif	
+
 }
 
 /**
@@ -38,20 +46,16 @@ pos_int DataCanopy::GetAddress(pos_int node, pos_int chunk){
 }
 
 bool DataCanopy::IsLevelOne(pos_int x){
-	while (((x & 1) == 0) && x > 1) /* While x is even and > 1 */
-   		x >>= 1;
- 	return (x == 1);
+ 	return (__builtin_popcount(x)==1);
 }
 
 bool DataCanopy::IsLevelTwo(pos_int x){
-	while (((x & 1) == 0) && x > 1) /* While x is even and > 1 */
-   		x >>= 1;
- 	return (x == 2);
+	return (__builtin_popcount(x)==2);
 }
 
 pos_int DataCanopy::ProbeCanopy(){
 	
-	pos_int n=0;
+	/*pos_int n=0;
 	pos_int canopy_size = pow(2,(md->num_col));
 
 		for (pos_int i = 1; i < canopy_size ; ++i){
@@ -66,7 +70,8 @@ pos_int DataCanopy::ProbeCanopy(){
 
 		}
 	assert(n==nodes.size());
-	return n;	
+	return n;	*/
+	return 0;
 
 }
 
@@ -104,12 +109,9 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			
 			/*Insert the node in the data canopy*/
 
-			pthread_mutex_lock(&mutex);
-
-			std::pair<pos_int,node*> to_insert(GetAddress(pow(2,i),k),nd);
-			nodes.insert(to_insert);
-
-			pthread_mutex_unlock(&mutex);
+			
+			InsertNode(GetAddress(pow(2,i),k),nd);
+			
 			/***/
 #endif
 
@@ -156,12 +158,7 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 				/***/
 #ifdef INSERT	
 
-				pthread_mutex_lock(&mutex);
-
-				std::pair<pos_int,node*> to_insert(address,nd);
-				nodes.insert(to_insert);
-
-				pthread_mutex_unlock(&mutex);
+				InsertNode(address,nd);
 #endif
 			}
 		}
@@ -209,12 +206,7 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 					/***/
 
 #ifdef INSERT		
-					pthread_mutex_lock(&mutex);
-
-					std::pair<pos_int,node*> to_insert(address,nd);
-					nodes.insert(to_insert);
-
-					pthread_mutex_unlock(&mutex);
+					InsertNode(address,nd);
 #endif				
 				}
 
@@ -241,12 +233,8 @@ error_code DataCanopy::BuildLevelOneTwo(pos_int start_chunk, pos_int end_chunk){
 				/***/
 #ifdef INSERT	
 
-				pthread_mutex_lock(&mutex);
+				InsertNode(address,nd);
 
-				std::pair<pos_int,node*> to_insert(address,nd);
-				nodes.insert(to_insert);
-
-				pthread_mutex_unlock(&mutex);
 #endif
 			}
 			is_level_one_Calculated=true;
@@ -303,12 +291,8 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 			nd->statistic->num+=CalculateMultiCorrelation(i,k);
 #ifdef INSERT			
 
-			pthread_mutex_lock(&mutex);
+			InsertNode(GetAddress(i,k),nd);
 
-			std::pair<pos_int,node*> to_insert(GetAddress(i,k),nd);
-			nodes.insert(to_insert);
-
-			pthread_mutex_unlock(&mutex);
 #endif
 		}
 			
@@ -427,6 +411,26 @@ float DataCanopy::CalculateMultiCorrelation(pos_int node_id, int chunk_number){
 		}
 	}
 	return 0;
+}
+error_code DataCanopy::InsertNode(pos_int address, node* nd){
+
+#ifndef LOCKFREE
+	pthread_mutex_lock(&mutex);
+
+	std::pair<pos_int,node*> to_insert(address,nd);
+	nodes.insert(to_insert);
+
+	pthread_mutex_unlock(&mutex);
+
+#else
+
+	concurrent_map::accessor a;
+	nodes.insert(a,address);
+	a->second=nd;
+
+#endif
+
+	return 1;
 }
 
 

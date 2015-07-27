@@ -29,11 +29,12 @@ def run_vary_column_number(filename,outfile,start,end,size_col,size_chunk,num_th
 		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+" >>" + outfile + " 2>&1")
 
 def run_vary_thread_number(filename,outfile,start,end,num_col,size_col,size_chunk):
+	NUMA="numactl --localalloc"
 	os.system("rm "+outfile)
 	for i in range(start,end):
 		num_threads = pow(2,i)
-		print " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+">>" + outfile + " 2>&1"
-		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+" >>" + outfile + " 2>&1")
+		print NUMA+ " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+">>" + outfile + " 2>&1"
+		f = os.system(NUMA + " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+" >>" + outfile + " 2>&1")
 
 
 
