@@ -37,7 +37,7 @@ def parseFile(filename):
 parseFile('out')
 
 
-def Plot(filename,x_value,y_values,outfile,log):
+def Plot(filename,x_value,y_values,outfile,log_x,log_y):
 
 	open_file = pd.read_csv(filename)
 	x = np.array(open_file[x_value])
@@ -67,15 +67,16 @@ def Plot(filename,x_value,y_values,outfile,log):
 	#g("set format y '%sx10^{%S}'")
 	g("set xlabel '"+x_label+"'")
 	g("set format y '%1.2e'")
-	if log:
+	if log_x:
 		g("set logscale x")
+	if log_x:
+		g("set logscale y")
 
 
 
 
 	#plot
 	g.plot(plot_data[0],plot_data[1],plot_data[2],plot_data[3])
-	g("set logscale y 2")
 	g("set output '"+outfile+"_log.pdf'")
 	g.plot(plot_data[0],plot_data[1],plot_data[2],plot_data[3])
 	#g.plot(plot_data[0])
@@ -111,7 +112,7 @@ def PlotSimple(filename,x_value,y_values,outfile,log):
 	g("set xlabel '"+x_label+"'")
 	g("set format y '%1.2e'")
 	if log:
-		g("set logscale x 2")
+		g("set logscale x 2c")
 
 
 
