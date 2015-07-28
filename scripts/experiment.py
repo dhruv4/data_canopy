@@ -4,10 +4,11 @@ import plot as p
 
 #num_col, size_col, size_chunk
 
-def run_vary_column_size(filename,outfile,start,end,num_col,size_chunk,num_threads):
+def run_vary_column_size(filename,outfile,start,end,num_col,num_chun,num_threads):
 	os.system("rm "+outfile)
 	for i in range(start,end):
 		size_col = pow(10,i)
+		size_chunk=size_col/num_chun
 		print " ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+ " >>" + outfile + " 2>&1"
 		f = os.system(" ../bin/"+ filename + " " + str(num_col) + " " + str(size_col) + " " +str(size_chunk)+ " " +str(num_threads)+ " >>" + outfile + " 2>&1")
 
