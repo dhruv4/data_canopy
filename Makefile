@@ -18,7 +18,7 @@ all: $(BUILD)
 
 
 DATA_CANOPY: $(DEP)
-	$(COMPILER) $(OPTIONS) -o $(OUT_DIR)demo_performance $(DC) $(LINKER_OPT) $(DEFINE_1)
+	$(COMPILER) $(OPTIONS) -o $(OUT_DIR)test $(DC) $(LINKER_OPT) $(DEFINE_1)
 
 
 

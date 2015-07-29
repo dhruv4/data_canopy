@@ -34,7 +34,7 @@ vary_thread_num = False
 
 vary_column_size = True
 vary_chunk_size = True
-vary_column_number = True
+#vary_column_number = True
 #vary_thread_num = True
 
 num_threads=1
@@ -59,11 +59,12 @@ if vary_column_size:
 
 	file_name="varyColumnSize"
 	
-	exp.run_vary_column_size("test",path_raw+folder_name+"/"+file_name+raw_ext,4,9,15,10,num_threads)
-	exp.parseFile(path_raw+folder_name+"/"+file_name+raw_ext)
+	#exp.run_vary_column_size("test",path_raw+folder_name+"/"+file_name+raw_ext,4,9,15,10,num_threads)
+	#exp.parseFile(path_raw+folder_name+"/"+file_name+raw_ext)
 	
 	p.Plot(path_raw+folder_name+"/"+file_name+raw_ext+csv_ext,'size_col',['level_one_time','level_two_time','rest_of_levels_time','total_time'],path_graphs+folder_name+"/"+file_name,True,True)
-	p.Plot(path_raw+folder_name+"/"+file_name+raw_ext+csv_ext,'size_col',['cache-misses'],path_graphs+folder_name+"/"+file_name,True,False)
+	p.Plot(path_raw+folder_name+"/"+file_name+raw_ext+csv_ext,'size_col',['level_one_time','level_two_time','rest_of_levels_time','total_time'],path_graphs+folder_name+"/"+file_name,True,False)
+	#p.Plot(path_raw+folder_name+"/"+file_name+raw_ext+csv_ext,'size_col',['cache-misses'],path_graphs+folder_name+"/"+file_name,True,False)
 
 if vary_chunk_size:
 
