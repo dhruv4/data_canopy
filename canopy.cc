@@ -435,11 +435,11 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 	float built=GetCanopySize()*1.0/full*1.0*100;
 	//cout<<built<<endl;
 	if (built-previous_print>=2){
-		cout<<built<<"|"<<built*100<<"\n";
+		cout<<built<<"|"<<built*100<<"&\n";
 		previous_print=built;
 	}
 	if (built==100){
-		cout<<built<<"|"<<built*100<<"\n";
+		cout<<built<<"|"<<built*100<<"&\n";
 		previous_print=built;
 	}
 #endif
