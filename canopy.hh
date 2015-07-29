@@ -81,10 +81,14 @@ private:
 	bool is_level_two_built;
 
 	pthread_mutex_t mutex;
+
+	//int percent_built=0;
+	//int print after;
 	
 	error_code InsertNode(pos_int address, node* node);
 	node* GetNode(pos_int address);
 
+	float previous_print=0;
 	
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);

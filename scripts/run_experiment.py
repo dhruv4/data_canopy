@@ -47,9 +47,9 @@ pdf_ext=".pdf"
 
 if vary_column_number:
 
-	file_name="varyColumn"
+	file_name="varyColumnNumber"
 	
-	exp.run_vary_column_number("test",path_raw+folder_name+"/"+file_name+raw_ext,5,8,100000,10,num_threads)
+	exp.run_vary_column_number("test",path_raw+folder_name+"/"+file_name+raw_ext,5,25,100000,10,num_threads)
 	exp.parseFile(path_raw+folder_name+"/"+file_name+raw_ext)
 
 	p.Plot(path_raw+folder_name+"/"+file_name+raw_ext+csv_ext,'num_col',['level_one_time','level_two_time','rest_of_levels_time','total_time'],path_graphs+folder_name+"/"+file_name,False,False)

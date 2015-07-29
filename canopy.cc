@@ -430,6 +430,18 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 
 #endif
 
+	pos_int full = (pow( 2,md->num_col) -1 ) * md->num_chun;
+
+	float built=GetCanopySize()*1.0/full*1.0*100;
+	//cout<<built<<endl;
+	if (built-previous_print>=2){
+		cout<<built<<"|"<<built*100<<"\n";
+		previous_print=built;
+	}
+	if (built==100){
+		cout<<built<<"|"<<built*100<<"\n";
+		previous_print=built;
+	}
 	return 1;
 }
 
