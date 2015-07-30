@@ -78,16 +78,17 @@ pos_int DataCanopy::ProbeCanopy(){
 
 
 error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
-
+ 
 
 	int num = 0; 
 
 	for (pos_int i = 0; i<md->num_col; ++i){
-
 		for (pos_int k = start_chunk; k < end_chunk; ++k){
-			
+#ifdef PRINT_FOR_DEMO_INTERACT
+			cout<<"level: 1, ";
+			cout<<"chunk: "<<k<<", ";
 			num++;
-
+#endif
 			/*Create a new node. For level one the identifier is 2^i*/
 			
 			node* nd = new node();
@@ -102,7 +103,10 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			nd->statistic->mean=CalculateMean(md->chunk_list[k].vectors[i],md->chunk_list[k].size);
 			nd->statistic->variance=CalculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
 			nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
-
+#ifdef PRINT_FOR_DEMO_INTERACT
+			cout<<"stat: ["<<nd->statistic->mean<<","<<nd->statistic->variance<<","<<nd->statistic->standard_deviation<<"]";
+			cout<<" childs: ["<<i<<"]"<<endl;
+#endif
 			/***/
 
 #ifdef INSERT	
@@ -435,11 +439,11 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 	float built=GetCanopySize()*1.0/full*1.0*100;
 	//cout<<built<<endl;
 	if (built-previous_print>=2){
-		cout<<built<<"|"<<built*100<<"&\n";
+		cout<<built<<"|"<<built*100<<"\n";
 		previous_print=built;
 	}
 	if (built==100){
-		cout<<built<<"|"<<built*100<<"&\n";
+		cout<<built<<"|"<<built*100<<"\n";
 		previous_print=built;
 	}
 #endif
