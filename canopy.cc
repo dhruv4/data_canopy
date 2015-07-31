@@ -108,10 +108,10 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
 #ifdef PRINT_FOR_DEMO_INTERACT
 			
-			output_file<<"{level: 1, ";
-			output_file<<"chunk: "<<k<<", ";
-			output_file<<"stat: ["<<nd->statistic->mean<<","<<nd->statistic->variance<<","<<nd->statistic->standard_deviation<<"], ";
-			output_file<<" childs: ["<<i<<"]}\n,";
+			output_file<<"{\"level\": 1, ";
+			output_file<<"\"chunk\": "<<k<<", ";
+			output_file<<"\"stat\": ["<<nd->statistic->mean<<","<<nd->statistic->variance<<","<<nd->statistic->standard_deviation<<"], ";
+			output_file<<"\"childs\": ["<<i<<"]}\n,";
 
 #endif
 			/***/
@@ -170,10 +170,10 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 
 #ifdef PRINT_FOR_DEMO_INTERACT
 
-				output_file<<"{level: 2, ";
-				output_file<<"chunk: "<<k<<", ";
-				output_file<<"stat: ["<<nd->statistic->correlation<<"], ";
-				output_file<<"childs: ["<<i<<","<<j<<"]},";
+				output_file<<"{\"level\": 2, ";
+				output_file<<"\"chunk\": "<<k<<", ";
+				output_file<<"\"stat\": ["<<nd->statistic->correlation<<"], ";
+				output_file<<"\"childs\": ["<<i<<","<<j<<"]},";
 
 #endif
 				/***/			
@@ -313,10 +313,10 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 
 #ifdef PRINT_FOR_DEMO_INTERACT
 
-				output_file<<"{level:"<<__builtin_popcount(i)<<", ";
-				output_file<<"chunk: "<<k<<", ";
-				output_file<<"stat: ["<<nd->statistic->correlation<<"]";
-				output_file<<" childs: [";
+				output_file<<"{\"level\":"<<__builtin_popcount(i)<<", ";
+				output_file<<"\"chunk\": "<<k<<", ";
+				output_file<<"\"stat\": ["<<nd->statistic->correlation<<"] ";
+				output_file<<"\"childs\": [";
 
 
 #endif
