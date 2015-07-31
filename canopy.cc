@@ -490,6 +490,7 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 	float built=GetCanopySize()*1.0/full*1.0*100;
 	//cout<<built<<endl;
 	if (built-previous_print>=5){
+		cout<<"[";
 		cout<<built<<"|";
 		flush(output_file);
 		string line;
@@ -508,6 +509,7 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 		previous_print=built;
 	}
 	if(previous_print != 100 && built==100){
+		cout<<"[";
 		cout<<built<<"|";
 		flush(output_file);
 		string line;
