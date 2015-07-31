@@ -39,6 +39,11 @@ DataCanopy::DataCanopy(mdata* m){
 	is_level_one_built=false;
 	is_level_two_built=false;
 
+#ifdef PRINT_FOR_DEMO_INTERACT
+	output_file.open("internal.txt");
+	print_file.open("internal.txt");
+#endif
+
 }
 
 pos_int DataCanopy::GetAddress(pos_int node, pos_int chunk){
@@ -84,11 +89,9 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 
 	for (pos_int i = 0; i<md->num_col; ++i){
 		for (pos_int k = start_chunk; k < end_chunk; ++k){
-#ifdef PRINT_FOR_DEMO_INTERACT
-			cout<<"level: 1, ";
-			cout<<"chunk: "<<k<<", ";
+			
 			num++;
-#endif
+
 			/*Create a new node. For level one the identifier is 2^i*/
 			
 			node* nd = new node();
@@ -104,8 +107,12 @@ error_code DataCanopy::BuildLevelOne(pos_int start_chunk, pos_int end_chunk){
 			nd->statistic->variance=CalculateVariance(md->chunk_list[k].vectors[i],md->chunk_list[k].size,nd->statistic->mean);
 			nd->statistic->standard_deviation=sqrt(nd->statistic->variance);
 #ifdef PRINT_FOR_DEMO_INTERACT
-			cout<<"stat: ["<<nd->statistic->mean<<","<<nd->statistic->variance<<","<<nd->statistic->standard_deviation<<"]";
-			cout<<" childs: ["<<i<<"]"<<endl;
+			
+			output_file<<"{level: 1, ";
+			output_file<<"chunk: "<<k<<", ";
+			output_file<<"stat: ["<<nd->statistic->mean<<","<<nd->statistic->variance<<","<<nd->statistic->standard_deviation<<"], ";
+			output_file<<" childs: ["<<i<<"]}\n,";
+
 #endif
 			/***/
 
@@ -143,7 +150,7 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 		for (pos_int j = i+1; j<md->num_col; ++j){
 
 			for (pos_int k = start_chunk; k < end_chunk; ++k){
-				
+
 				/*Create a new node. For level two the identifier is 2^i + 2^j, k*/
 
 				node* nd = new node();
@@ -160,6 +167,16 @@ error_code DataCanopy::BuildLevelTwo(pos_int start_chunk, pos_int end_chunk){
 				nd->statistic->correlation=CalculateCorrelation(md->chunk_list[k].vectors[i],md->chunk_list[k].size,md->chunk_list[k].vectors[j],md->chunk_list[k].size);
 				
 				/***/
+
+#ifdef PRINT_FOR_DEMO_INTERACT
+
+				output_file<<"{level: 2, ";
+				output_file<<"chunk: "<<k<<", ";
+				output_file<<"stat: ["<<nd->statistic->correlation<<"], ";
+				output_file<<"childs: ["<<i<<","<<j<<"]},";
+
+#endif
+				/***/			
 #ifdef INSERT	
 
 				InsertNode(address,nd);
@@ -292,7 +309,24 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 		
 		for (pos_int k = start_chunk; k < end_chunk; ++k){
 			num++;
+			
+
+#ifdef PRINT_FOR_DEMO_INTERACT
+
+				output_file<<"{level:"<<__builtin_popcount(i)<<", ";
+				output_file<<"chunk: "<<k<<", ";
+				output_file<<"stat: ["<<nd->statistic->correlation<<"]";
+				output_file<<" childs: [";
+
+
+#endif
+
 			nd->statistic->num+=CalculateMultiCorrelation(i,k);
+
+#ifdef PRINT_FOR_DEMO_INTERACT
+			output_file<<"]},";
+#endif
+
 #ifdef INSERT			
 
 			InsertNode(GetAddress(i,k),nd);
@@ -402,7 +436,9 @@ float DataCanopy::CalculateMultiCorrelation(pos_int node_id, int chunk_number){
 		/*Check if the particular column is of relevance to the ID*/
 		
 		if(( (node_id>>j) &1) == 1){
-			
+#ifdef PRINT_FOR_DEMO_INTERACT
+			output_file<<j<<",";
+#endif
 			/*Check what other columns are in the ID, which should be paired with this*/
 
 			for(pos_int i = j+1; i < md->num_col; ++i){
@@ -447,6 +483,45 @@ error_code DataCanopy::InsertNode(pos_int address, node* nd){
 		previous_print=built;
 	}
 #endif
+
+#ifdef PRINT_FOR_DEMO_INTERACT
+	pos_int full = (pow( 2,md->num_col) -1 ) * md->num_chun;
+
+	float built=GetCanopySize()*1.0/full*1.0*100;
+	//cout<<built<<endl;
+	if (built-previous_print>=5){
+		cout<<built<<"|";
+		flush(output_file);
+		string line;
+
+		while(getline(print_file,line)){
+			cout<<line;
+		}
+
+		cout<<"]&\n"<<endl;
+
+		print_file.close();
+		print_file.open("internal.txt");
+
+		output_file.close();
+		output_file.open("internal.txt");
+		previous_print=built;
+	}
+	if(previous_print != 100 && built==100){
+		cout<<built<<"|";
+		flush(output_file);
+		string line;
+		while(getline(print_file,line)){
+			cout<<line;
+		}
+		cout<<"]&\n"<<endl;
+		//output_file.close();
+		//output_file.open("internal.txt");
+		previous_print=built;
+	}
+
+#endif
+
 	return 1;
 }
 

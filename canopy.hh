@@ -7,6 +7,7 @@
 #include <assert.h>
 #include <pthread.h>
 #include <assert.h>
+#include <fstream>
 
 
 
@@ -88,7 +89,11 @@ private:
 	error_code InsertNode(pos_int address, node* node);
 	node* GetNode(pos_int address);
 
+	// variables for demo purposes
+
 	float previous_print=0;
+	ofstream output_file;
+	ifstream print_file;
 	
 	bool IsLevelOne(pos_int x);
 	bool IsLevelTwo(pos_int x);
