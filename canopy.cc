@@ -315,7 +315,7 @@ error_code DataCanopy::BuildAll(pos_int start_chunk, pos_int end_chunk){
 
 				output_file<<"{\"level\":"<<__builtin_popcount(i)<<", ";
 				output_file<<"\"chunk\": "<<k<<", ";
-				output_file<<"\"stat\": ["<<nd->statistic->correlation<<"] ";
+				output_file<<"\"stat\": ["<<nd->statistic->correlation<<"], ";
 				output_file<<"\"childs\": [";
 
 
