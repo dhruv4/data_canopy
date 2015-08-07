@@ -64,40 +64,48 @@ typedef concurrent_hash_map<pos_int,node*,MyHashCompare> concurrent_map;
 
 class DataCanopy{
 
-private:
-	
-	node** canopies;					/*Store as an array indexed by the node identifier*/
-	
-#ifndef LOCKFREE
-	unordered_map<pos_int,node*> nodes;	/*Store as a hash map*/
-#else	
-	concurrent_map nodes;
-#endif
-
+	/*** Data variables ***/
 
 	mdata* md;
 	pos_int log_num_chun;
+
+	/***/
+
+	/*** data structures for data canopy ***/
+
+private:
+	
+#ifndef LOCKFREE
+	unordered_map<pos_int,node*> nodes;	/*Store as a hash map*/
+	pthread_mutex_t mutex;				/*The mutex for the locking version*/
+#else	
+	concurrent_map nodes;				/*The concurent hash table from TBB*/
+	
+#endif
+
+	/***/
 	
 	bool is_level_one_built;
 	bool is_level_two_built;
+	bool IsLevelOne(pos_int x);
+	bool IsLevelTwo(pos_int x);
 
-	pthread_mutex_t mutex;
+	/*** Node getters and Setters ***/ 
 
-	//int percent_built=0;
-	//int print after;
-	
 	error_code InsertNode(pos_int address, node* node);
-	node* GetNode(pos_int address);
+	pos_int GetNodeValue(pos_int add);
 
-	// variables for demo purposes
+	/***/ 
+
+	/*** variables for demo purposes ***/
 
 	float previous_print=0;
 	ofstream output_file;
 	ifstream print_file;
-	
-	bool IsLevelOne(pos_int x);
-	bool IsLevelTwo(pos_int x);
 
+	/***/
+
+	/*** Stat Functions (Should be a seperate class) ***/
 	
 	float CalculateCorrelation(column* x, column* y);
 	float CalculateCorrelation(data* x, pos_int size_x, data* y, pos_int size_y);
@@ -105,7 +113,7 @@ private:
 	float CalculateVariance(data* x, pos_int size_x,float mean);
 	float CalculateMultiCorrelation(pos_int node_id, int chunk_number);
 
-	pos_int GetNodeValue(pos_int add);
+	/***/
 
 	
 public:
@@ -123,8 +131,8 @@ public:
 	pos_int GetNumChunk();
 	pos_int GetAddress(pos_int node, pos_int chunk);
 
-	//temp functions
-
+	node* GetNode(pos_int address);
+	
 };
 
 #endif

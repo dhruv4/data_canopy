@@ -6,8 +6,6 @@ void* thread_BuildThreaded(void* input){
 
 	threadInput* in = (threadInput*) input;
 
-	//cout<<in->start_chunk<<"\t"<<in->end_chunk<<endl;
-
 	if(in->buildMode == 1)
 		in->dc->BuildLevelOne(in->start_chunk,in->end_chunk);
 

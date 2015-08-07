@@ -8,6 +8,11 @@
 #include "data.hh"
 #include "canopy.hh"
 
+/*
+*  The input given to the thread building the data canopy
+*/
+
+
 struct threadInput{
 	pos_int start_chunk;
 	pos_int end_chunk;
@@ -15,9 +20,12 @@ struct threadInput{
 	int buildMode; // 1 -- LevelOne; 2 -- Level 2; 12 -- Level 1 and 2; 3 -- All levels;
 };
 
-//void thread_BuildThreaded(void* input);
+/*
+*	This class is responsible for building the data canopy
+*/
 
 class CanopyBuilder{
+	
 	private:
 		int nthreads;
 		DataCanopy * canopy;

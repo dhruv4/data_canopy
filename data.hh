@@ -5,6 +5,14 @@
 #include <iostream>
 #include <cstdlib>
 
+#include <vector>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <vector>
+#include <assert.h>
+
 #include "config.h"
 
 using namespace std;
@@ -49,11 +57,13 @@ struct mdata{
 	Create and manipulate data
 */
 
+error_code load_data(char* filename,pos_int num_col);
 error_code create_column(column* col, data* vector, pos_int size, pos_int identifier);
 error_code create_chunk(chunk* chun, pos_int identifier, pos_int size, pos_int num_col, data** vectors);
 error_code create_mdata(mdata* md, column* column_list, chunk* chunk_list);
 error_code chunkify(mdata** md, column* column_list, pos_int size, pos_int num_col);
 error_code pretty_print_md(mdata* md);
 error_code pretty_print_cols(column* col, pos_int num_col);
+error_code load_file(char* filename, column** columns, pos_int num_col, pos_int num_rows);
 
 #endif

@@ -4,9 +4,13 @@
 
 #include <math.h>
 #include <assert.h>
+#include <sstream>
+
 
 #include "data.hh"
 #include "config.h"
+
+using namespace std;
 
 
 

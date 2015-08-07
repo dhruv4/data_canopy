@@ -4,6 +4,7 @@
 #include "canopy.hh"
 #include "canopyBuilder.hh"
 #include "generator.hh"
+#include "canopyInteractor.hh"
 #include "./tools/run_perf.hh"
 #include "./tools/timer.hh"
 
@@ -42,6 +43,11 @@ int main(int argc,  char** argv){
 #endif
 
 	column* columns = (column*)malloc(num_col*sizeof(column));
+	//column* columns;
+	/*for (pos_int i = 0; i < num_col; ++i){
+		columns[i].size = size_col;
+		columns[i].vector = (data*)malloc(size_col*sizeof(data));
+	}*/
 	
 	for (pos_int i = 0; i < num_col; ++i){
 		//sleep(1);
@@ -49,6 +55,11 @@ int main(int argc,  char** argv){
 		columns[i].size=size_col;
 		columns[i].identifier=i;
 	}
+
+	//load_file("file.csv",&columns,num_col,size_col);
+	//cout<<"loaded"<<endl;
+	//assert(columns != NULL);
+	//pretty_print_cols(columns,num_col);
 
 	mdata* md;
 	chunkify(&md, columns, size_chunk, num_col);
@@ -108,6 +119,29 @@ int main(int argc,  char** argv){
 		cout<<dc->GetCanopySize()<<",,canopy_size"<<endl;
 		p->endPerf();
 		cout<<"***"<<endl;
+
+#endif
+
+
+#ifdef INTERACT
+
+		pretty_print_cols(columns,num_col);
+
+
+	CanopyInteractor* interactor = new CanopyInteractor(dc);
+
+	pos_int* col = new pos_int[2];
+
+	col[0]=1;
+	col[1]=2;
+
+
+
+
+
+	stat* st = interactor->GetStat(1,2,col);
+	cout<<st->mean<<endl;
+	cout<<st->correlation<<endl;
 
 #endif
 

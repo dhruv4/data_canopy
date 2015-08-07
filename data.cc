@@ -152,3 +152,67 @@ error_code pretty_print_cols(column* col, pos_int num_col){
 	cout<<endl;
 	return 1;
 }
+
+
+vector<string>& divide(const string &s, char delim, vector<string> &elems) {
+    stringstream ss(s);
+    string item;
+    while (getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+vector<string> divide(const string &s, char delim) {
+    vector<string> elems;
+    divide(s, delim, elems);
+    return elems;
+}
+
+
+error_code load_file(char* filename, column** columns, pos_int num_col, pos_int size_col){
+
+	string line;
+	ifstream my_file (filename);
+
+	*columns = (column*)malloc(num_col*sizeof(column));
+	
+	for (pos_int i = 0; i < num_col; ++i){
+		columns[i]->size = size_col;
+		columns[i]->vector = (data*)malloc(size_col*sizeof(data));
+	}
+
+	
+	int posn = 0;
+	
+	if(my_file.is_open()){
+
+		while ( getline (my_file,line,';') && size_col != 0){
+			vector <string> items = divide(line,',');
+			assert(items.size()==num_col);
+			
+			cout<<line<<endl;
+			
+			size_col--;
+			
+			posn = 0;
+			for (pos_int i = 0; i < num_col; ++i){
+				columns[i]->vector[posn] = stoi(items[i]);
+				posn++;
+			}
+			
+			cout<<items.size()<<endl;
+			cout<<num_col<<endl;
+		}
+	}
+
+
+
+
+return 0;
+
+
+
+
+}

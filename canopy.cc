@@ -16,6 +16,17 @@ pos_int DataCanopy::GetNodeValue(pos_int add){
 
 }
 
+node* DataCanopy::GetNode(pos_int add){
+
+#ifndef LOCKFREE
+	return nodes.find(add)->second;
+#else
+	concurrent_map::accessor result;
+	nodes.find(result,add);
+	return result->second;
+#endif	
+}
+
 /**
 *	END--Temporary functions
 */
