@@ -11,3 +11,9 @@ data region.
 
 -- The major bottleneck is the insert function as I am using a lock for now. We need a non-locking version. The current implementation does 
 not scale well when we insert values. 
+
+
+-- Add string ids to the columns
+ 
+-- Add the way to load metadata when the data is loaded. Think of a language to query the canopy with and structure it 
+properly

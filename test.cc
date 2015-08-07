@@ -43,20 +43,8 @@ int main(int argc,  char** argv){
 #endif
 
 	column* columns = (column*)malloc(num_col*sizeof(column));
-	///column* columns;
 	
-	
-	/*for (pos_int i = 0; i < num_col; ++i){
-		//sleep(1);
-		generate_rand(&columns[i].vector,size_col);
-		columns[i].size=size_col;
-		columns[i].identifier=i;
-	}*/
-
 	load_file("file.csv",&columns,num_col,size_col);
-//	cout<<"loaded"<<endl;
-//	assert(columns != NULL);
-//	pretty_print_cols(columns,num_col);
 
 	mdata* md;
 	chunkify(&md, columns, size_chunk, num_col);
@@ -118,7 +106,7 @@ int main(int argc,  char** argv){
 		cout<<"***"<<endl;
 
 #endif
-
+pretty_print_cols(columns,num_col);
 
 #ifdef INTERACT
 

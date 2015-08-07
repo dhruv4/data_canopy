@@ -119,7 +119,11 @@ error_code pretty_print_md(mdata* md){
 
 error_code pretty_print_cols(column* col, pos_int num_col){
 
-	
+	for (pos_int j = 0; j < num_col; ++j){
+		cout<<"\t";
+		cout<<col[j].column_name; 
+	}
+	cout<<endl;
 	for (pos_int j = 0; j < num_col; ++j){
 		cout<<"\t";
 		cout<<col[j].vector[0]; 
@@ -181,26 +185,30 @@ error_code load_file(char* filename, column** columns, pos_int num_col, pos_int 
 		(*columns)[i].vector = (data*)malloc(size_col*sizeof(data));
 	}
 	
-	int posn = 0;
+	int posn = -1;
 	
 	if(my_file.is_open()){
 		while ( getline (my_file,line,';') && size_col != 0){
+
 			
 			vector <string> items = divide(line,',');
 			assert(items.size()==num_col);
 			
 			for (pos_int i = 0; i < num_col; ++i){
-				(*columns)[i].vector[posn] = stoi(items[i]);
-			}
 			
+				if(posn == -1){
+					(*columns)[i].column_name = new char[strlen(items[i].c_str())+1];
+					strcpy((*columns)[i].column_name,items[i].c_str());
+				}else{
+					(*columns)[i].vector[posn] = stoi(items[i]);
+				}
+			}
+			if (posn != -1)
+				size_col--;
 			posn++;	
-			size_col--;
+			
 		}
+			
 	}
-
-return 0;
-
-
-
-
+	return 0;
 }

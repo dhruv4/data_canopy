@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <vector>
 #include <assert.h>
@@ -26,6 +27,7 @@ typedef int error_code;
 	Internal representation of the columns in the data canopy
 */
 struct column{
+	char* column_name;		/*The name of the column that we are interested in */
 	pos_int identifier; 	/*A number that identifes the column*/ 
 	pos_int size;			/*Size of the column*/
 	data* vector;			/*Pointer to the data array*/
