@@ -175,7 +175,7 @@ vector<string> divide(const string &s, char delim) {
 }
 
 
-error_code load_file(char* filename, column** columns, pos_int num_col, pos_int size_col){
+error_code load_file(const char* filename, column** columns, pos_int num_col, pos_int size_col){
 
 	string line;
 	ifstream my_file (filename);
@@ -187,7 +187,7 @@ error_code load_file(char* filename, column** columns, pos_int num_col, pos_int 
 	
 	int posn = -1;
 	
-	if(my_file.is_open()){
+	if(my_file.is_open() && my_file.good()){
 		while ( getline (my_file,line,';') && size_col != 0){
 
 			
@@ -209,6 +209,9 @@ error_code load_file(char* filename, column** columns, pos_int num_col, pos_int 
 			
 		}
 			
+	}else{
+		cout<<"file does not exist"<<endl;
+		assert(my_file.is_open() && my_file.good());
 	}
 	return 0;
 }

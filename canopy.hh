@@ -10,7 +10,6 @@
 #include <fstream>
 
 
-
 #include "data.hh"
 #include "config.h"
 #include "tbb/concurrent_hash_map.h"

@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <cstdlib>
-
 #include <vector>
 #include <fstream>
 #include <iostream>
@@ -66,6 +65,6 @@ error_code create_mdata(mdata* md, column* column_list, chunk* chunk_list);
 error_code chunkify(mdata** md, column* column_list, pos_int size, pos_int num_col);
 error_code pretty_print_md(mdata* md);
 error_code pretty_print_cols(column* col, pos_int num_col);
-error_code load_file(char* filename, column** columns, pos_int num_col, pos_int num_rows);
+error_code load_file(const char* filename, column** columns, pos_int num_col, pos_int num_rows);
 
 #endif

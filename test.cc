@@ -10,12 +10,46 @@
 
 using namespace std;
 
+bool getParam(int argc,char** argv,pos_int* num_col, pos_int* size_col, pos_int* size_chunk, int* num_threads, string* filename, bool* loadFromFile){
+
+	int c;	
+	while ((c = getopt (argc, argv, "c:r:s:t:f:")) != -1)
+    	switch (c){
+      		case 'c':
+        		*num_col=atoi(optarg);
+        		break;
+      		case 'r':
+        		*size_col=atoi(optarg);
+        		break;
+        	case 's':
+        		*size_chunk=atoi(optarg);
+				break;
+        	case 't':
+        		*num_threads=atof(optarg);
+        		break;
+        	case 'f':
+        		(filename)->assign(optarg);
+        		*loadFromFile=true;
+        		break;
+      		case '?':
+        		if (optopt == 'c')
+          			fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+        		else if (isprint (optopt))
+          			fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+        		else
+          			fprintf (stderr,
+                   		"Unknown option character `\\x%x'.\n",
+                   		optopt);
+        		return 1;
+      		default:
+        		abort ();
+     	}
+  		
+  return 0;
+}
 
 int main(int argc,  char** argv){
 
-	
-	if(argc !=5)
-		return -1;
 
 #ifdef PRINT_FOR_PLOTTING
 
@@ -26,28 +60,49 @@ int main(int argc,  char** argv){
 	timer* t = new timer();
 	timer* total_t = new timer();
 
+	pos_int num_col=0; 
+	pos_int size_col=0;
+	pos_int size_chunk=0; 
+	int num_threads=0;
+	string filename;
+	bool loadFromFile = false;
 
-
-	pos_int num_col = atoi(argv[1]); 
+	getParam(argc, argv, &num_col, &size_col, &size_chunk, &num_threads, &filename,&loadFromFile);
+/*	pos_int num_col = atoi(argv[1]); 
 	pos_int size_col = atoi(argv[2]);
 	pos_int size_chunk = atoi(argv[3]);
-	int num_threads = atoi(argv[4]);
+	int num_threads = atoi(argv[4]);*/
 
 #ifdef PRINT_FOR_PLOTTING
 
+	cout<<"here"<<endl;
 	cout<<num_col<<",,num_col"<<endl;
 	cout<<size_col<<",,size_col"<<endl;
 	cout<<size_chunk<<",,size_chunk"<<endl;
 	cout<<num_threads<<",,num_threads"<<endl;
+	if (loadFromFile){
+		cout<<filename<<",,file_name"<<endl;
+	}
 
 #endif
 
 	column* columns = (column*)malloc(num_col*sizeof(column));
+
+	if (!loadFromFile){
+
+		for (pos_int i = 0; i < num_col; ++i){
+			columns[i].size = size_col;
+			generate_rand(&columns[i].vector,size_col);
+		}
+
+	}else{
 	
-	load_file("file.csv",&columns,num_col,size_col);
+		load_file(filename.c_str(),&columns,num_col,size_col);
+	}
 
 	mdata* md;
 	chunkify(&md, columns, size_chunk, num_col);
+
 #ifdef PRINT_FOR_PLOTTING
 	p->startPerf();
 #endif
@@ -106,7 +161,7 @@ int main(int argc,  char** argv){
 		cout<<"***"<<endl;
 
 #endif
-pretty_print_cols(columns,num_col);
+//pretty_print_cols(columns,num_col);
 
 #ifdef INTERACT
 
