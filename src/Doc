@@ -1,0 +1,21 @@
+-- Need to fix the size of the data canopy such that the last chunk is assigned whatever remains of the column and not a fixed size. <FIXED>
+
+-- Rethink typeDef and Rethink C vs. CPP interface.
+
+-- Make the sizes of things unsigned long
+
+-- Confirm that the addition of values is being reflected. <fixed>
+
+-- Define a function that allows to construct the data canopy up to an arbitrary level at an arbitrary 
+data region. 
+
+-- The major bottleneck is the insert function as I am using a lock for now. We need a non-locking version. The current implementation does 
+not scale well when we insert values. 
+
+
+-- Add string ids to the columns
+ 
+-- Add the way to load metadata when the data is loaded. Think of a language to query the canopy with and structure it 
+properly
+
+-- There is an issue with the variance and correlation functions
