@@ -20,8 +20,8 @@ error_code generate_rand(data** vector, pos_int size);
 *	@Dhruv: implement these functions in generator.cc
 */
 
-error_code generate_normal(data** vector, pos_int size,float mean, float variance); // Normal distribtuion data
-error_code generate_exponential(data** vector, pos_int size,float lambda); // Exponential distribution data
-error_code generate_bernoulli(data** vector, pos_int size,float p); // Collections of zeros and ones
+error_code generate_normal(data** vector, pos_int size, float mean, float variance); // Normal distribtuion data
+error_code generate_exponential(data** vector, pos_int size, float lambda); // Exponential distribution data
+error_code generate_bernoulli(data** vector, pos_int size, float p); // Collections of zeros and ones
 
 #endif

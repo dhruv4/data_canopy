@@ -73,6 +73,9 @@ stat* CanopyInteractor::GetStat(pos_int chunk_number, pos_int level_number, pos_
 *		
 */
 
+//Regex for collecting chunk and level: \([0-9]+)(?=;)\g
+//Regex for collecting columns: \([0-9]+)(?=,)|([0-9]+)(?=})\g
+
 stat* CanopyInteractor::ParseRequest(const char* request,int length){
 
 	char parse_string[length];
