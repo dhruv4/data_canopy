@@ -81,23 +81,30 @@ stat* CanopyInteractor::ParseRequest(const char* request,int length){
 	char parse_string[length];
 	strcpy(parse_string,request);
 
-	char* item;
-	item = strtok(parse_string,";{,}");
-	pos_int chunk_number=atol(item);
+	regex e ("(\\d+)(?=;)|([0-9]+)(?=,)|([0-9]+)(?=})");
 
-	item = strtok(NULL,";{,}");
-	pos_int level_number=atol(item);
-	
+	sregex_iterator next(parse_string.begin(), parse_string.end(), e);
+	sregex_iterator end;
+
+	smatch match = *next;
+	pos_int chunk_number = stoi(match.str());
+	next++;
+	match = *next;
+	pos_int level_number = stoi(match.str());
+	next++;
+
 	pos_int* columns = new pos_int[level_number];
 
 	pos_int i=0;
 
-	while(i!=level_number){
-		item=strtok(NULL,";{,}");
-		columns[i]=atol(item);
+	while (next != end) {
+		match = *next;
+		columns[i] = stoi(match.str());
+		next++;
 		i++;
-
 	}
+
+
 
 	return GetStat(chunk_number,level_number,columns);
 
